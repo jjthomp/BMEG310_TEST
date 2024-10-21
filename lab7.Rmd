@@ -1,0 +1,53 @@
+---
+title: "BMEG-310 Lab 7"
+author: "Group 15: Jordan Thompson, Zhipeng Ren, Arabela Kelsie Tan"
+date: "2024-10-21"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(readr)
+library(readxl)
+rna.seq <- read.csv("C:\\Users\\jjtho\\Downloads\\TCGA-LIHC\\TCGA-LIHC\\RNAseq_LIHC.csv")
+clinical_data <- read.table("C:\\Users\\jjtho\\Downloads\\TCGA-LIHC\\TCGA-LIHC\\data_clinical_patient.txt", header = TRUE, sep = "\t")
+data_mutations <- read.table("C:\\Users\\jjtho\\Downloads\\TCGA-LIHC\\TCGA-LIHC\\data_mutations.txt", header = TRUE, sep = "\t")
+
+```
+
+```{r}
+patients_clinical <- length(unique(clinical_data$PATIENT_ID))
+
+```
+
+```{r}
+patients_rna <- length(unique(colnames(rna.seq[,-1])))
+```
+
+```{r}
+patients_mutations <- length(unique(data_mutations$Tumor_Sample_Barcode))
+```
+
+```{r}
+print(paste("Patients in clinical set: ", patients_clinical, "Patients in rna set: ", patients_rna, "Patients in mutation set:", patients_mutations))
+```
+
+```{r}
+library(stringr)
+clinical <- clinical_data$PATIENT_ID
+rna <- unique(colnames(rna.seq[,-1]))
+mutations <- unique(data_mutations$Tumor_Sample_Barcode)
+
+mutations <- substring(mutations, 1, 12)
+rna <- substring(rna, 1, 12)
+rna <- gsub("\\.", "-", rna)
+
+intersect_1 <- intersect(mutations, rna)
+intersect_2 <- intersect(intersect_1, clinical)
+print("Common patients:")
+print(length(intersect_2))
+```
+
